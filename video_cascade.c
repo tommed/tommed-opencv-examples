@@ -36,7 +36,8 @@ int main(int argc, char *argv[]) {
 	for(;;) {
 		frameImage=cvQueryFrame(capture);
 		if (NULL == frameImage) break; // capture all frames
-		IplImage *dup = cvCloneImage(frameImage);
+		IplImage *dup = cvCreateImage(cvGetSize(frameImage), IPL_DEPTH_8U, frameImage->nChannels);
+		cvFlip(frameImage, dup, 1);
 		
 		// facial recognition
 		double t = (double)cvGetTickCount();
