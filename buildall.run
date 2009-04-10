@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
+mkdir bin
 gcc -o bin/videotest videotest.c `pkg-config --cflags --libs opencv`
-#gcc -o bin/imagetest imagetest.c `pkg-config --cflags --libs opencv`
+gcc -o bin/imagetest imagetest.c `pkg-config --cflags --libs opencv`
