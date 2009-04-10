@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
-mkdir bin
+echo - Making sure Build dir exists
+mkdir bin 2> /dev/null
+
+echo - Building VideoTest
 gcc -o bin/videotest videotest.c `pkg-config --cflags --libs opencv`
+
+echo - Building ImageTest
 gcc -o bin/imagetest imagetest.c `pkg-config --cflags --libs opencv`
+
+echo - Building Highlighter-Pen Tracking
+gcc -o bin/hl_image hl_image.c `pkg-config --cflags --libs opencv`
+gcc -o bin/hl_video hl_video.c `pkg-config --cflags --libs opencv`
+
+echo Built!

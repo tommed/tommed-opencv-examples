@@ -8,7 +8,7 @@
 int main(int argc, char *argv[]) {
 
 	if (argc<2) {
-		fprintf(stderr, "You must specify the path to an .avi file\n");
+		fprintf(stderr, "You must specify the path to a video file\n");
 		exit(1);
 	}
 	
