@@ -3,6 +3,25 @@
 #include <cv.h>
 #include <highgui.h>
 
+CvScalar targetColour;
+int red, green, blue;
+
+void changeRed(int position) {
+	red = position;
+	targetColour.val[2] = (uchar)red;
+}
+
+void changeGreen(int position) {
+	green = position;
+	targetColour.val[1] = (uchar)green;
+}
+
+void changeBlue(int position) {
+	blue = position;
+	targetColour.val[0] = (uchar)blue;
+}
+
+
 int main(int argc, char *argv[]) {
 
 	if (argc<4) {
@@ -10,7 +29,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	
-	fprintf(stdout, "Loading file: %s", argv[1]);
+	fprintf(stdout, "Loading file: %s\n", argv[1]);
 	CvCapture *capture = cvCaptureFromAVI(argv[1]);
 	if (!capture) {
 		fprintf(stderr, "ERROR: Could not load video, check path.\n");
@@ -18,14 +37,20 @@ int main(int argc, char *argv[]) {
 	}
 	
 	// set the target colour from the command line params
-	CvScalar targetColour = CV_RGB((uchar)atoi(argv[2]), (uchar)atoi(argv[3]), (uchar)atoi(argv[4]));
+	red=atoi(argv[2]); green=atoi(argv[3]); blue=atoi(argv[4]);
+	targetColour = CV_RGB((uchar)red, (uchar)green, (uchar)blue);
 	int tolerance = atoi(argv[5]); // how far away from the colour can be accepted the same colour?
 
 	// create output windows
 	IplImage *frame = NULL;
 	cvNamedWindow("win1", CV_WINDOW_AUTOSIZE);
 	//cvNamedWindow("mask", CV_WINDOW_AUTOSIZE);
+	cvCreateTrackbar("red", "win1", &red, 255, changeRed);
+	cvCreateTrackbar("green", "win1", &green, 255, changeGreen);
+	cvCreateTrackbar("blue", "win1", &blue, 255, changeBlue);
+	cvCreateTrackbar("colour tolerance", "win1", &tolerance, 50, NULL);
 		
+	int totalCount=0, matchCount=0;
 	for (;;) {
 		frame = cvQueryFrame(capture);
 		if (!frame) break;
@@ -57,7 +82,9 @@ int main(int argc, char *argv[]) {
 		}
 
 		//fprintf(stdout, "mask complete, showing results in mask window\n");
+		totalCount++;
 		if (minx < 10000 && miny < 10000) {
+			matchCount++;
 			//fprintf(stdout, "found item of that colour in frame!\n");
 			cvRectangle(frame, cvPoint(minx,miny), cvPoint(maxx,maxy), CV_RGB(255,0,0), 3, 0, 0);
 		}
@@ -68,8 +95,11 @@ int main(int argc, char *argv[]) {
 		cvReleaseImage(&clone);
 	}
 	
-	fprintf(stdout, "INFO: exiting in 3 secs\n");
-	cvWaitKey(3000);
+	// display tracker 
+	fprintf(stdout, "Match rating %d/%d (%.2f percent)\n", matchCount, totalCount, 
+				  ((double)matchCount / (double)totalCount)*100);
+	
+	cvWaitKey(0);
 	cvDestroyWindow("win1");
 	//cvDestroyWindow("mask");
 	exit(0);
