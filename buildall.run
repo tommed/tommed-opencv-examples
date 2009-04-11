@@ -12,5 +12,13 @@ gcc -o bin/imagetest imagetest.c `pkg-config --cflags --libs opencv`
 echo - Building Custom Tracking
 gcc -o bin/video_cascade video_cascade.c `pkg-config --cflags --libs opencv`
 gcc -o bin/image_cascade image_cascade.c `pkg-config --cflags --libs opencv`
+gcc -o bin/colour-tracking colour-tracking.c `pkg-config --cflags --libs opencv`
+
+echo - Building Pick/Track a Colour - Image
+gcc -o bin/pick-a-colour-image pick-a-colour-image.c `pkg-config --cflags --libs opencv`
+gcc -o bin/track-a-colour-image track-a-colour-image.c `pkg-config --cflags --libs opencv`
+
+echo - Building Pick/Track a Colour - Video
+gcc -o bin/track-a-colour-video track-a-colour-video.c `pkg-config --cflags --libs opencv`
 
 echo Built!
