@@ -9,6 +9,9 @@ Purpose:
 Author:
 	Tom Medhurst (http://www.tommed.co.uk/)	
 
+"In Action" video:
+	http://www.youtube.com/watch?v=a05mzsXTb6k
+	
 Ubuntu Prereqs:
 	sudo apt-get install libcv-dev libcv1 libcvaux-dev libcvaux1 libhighgui-dev libhighgui1 opencv-doc
 	
