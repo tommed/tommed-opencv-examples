@@ -12,6 +12,7 @@ uint TmColourBlue;
 uint TmColourTolerance;
 CvCapture *TmCapture = NULL;
 CvScalar TmTargetColour;
+IplImage *TmLastFrame = NULL;
 
 //
 // Prototype the calibration callback functions
@@ -32,6 +33,14 @@ bool tmInitVideoCapture(char *filename, uint red, uint green, uint blue, uint to
 	return TmCapture != NULL;
 }
 
+int tmGetWidth() {
+	return (int)cvGetCaptureProperty(TmCapture, CV_CAP_PROP_FRAME_WIDTH);
+}
+
+int tmGetHeight() {
+	return (int)cvGetCaptureProperty(TmCapture, CV_CAP_PROP_FRAME_HEIGHT);
+}
+
 //
 // Create the display window which will show the video.
 // if @calibrate is set to TRUE then show calibration controls.
@@ -48,17 +57,16 @@ void tmInitDisplayWindow(bool calibrate) {
 
 void tmProcessFrames(tmFrameProcessedCallback on_frame_processed) {
 	//fprintf(stdout, "-inside tmProcessFrames\n");
-	IplImage *frame = NULL;
 	TmTargetColour = CV_RGB((uchar)TmColourRed, (uchar)TmColourGreen, (uchar)TmColourBlue);
 	for (;;) {
 		//fprintf(stdout, "-capture\n");
-		frame = cvQueryFrame(TmCapture);
-		if (!frame) break;
+		TmLastFrame = cvQueryFrame(TmCapture);
+		if (!TmLastFrame) break;
 		int w,h;
 		int minx=10000, miny=10000;
 		int maxx=0, maxy=0;
-		for (h=0; h<frame->height; h++) for (w=0; w<frame->width; w++) {
-			CvScalar currentColour = cvGet2D(frame,h,w);
+		for (h=0; h<TmLastFrame->height; h++) for (w=0; w<TmLastFrame->width; w++) {
+			CvScalar currentColour = cvGet2D(TmLastFrame,h,w);
 			if (currentColour.val[0] >= TmTargetColour.val[0]-TmColourTolerance && // compare BGR
 					currentColour.val[0] <= TmTargetColour.val[0]+TmColourTolerance &&
 					currentColour.val[1] >= TmTargetColour.val[1]-TmColourTolerance &&
@@ -80,7 +88,7 @@ void tmProcessFrames(tmFrameProcessedCallback on_frame_processed) {
 	
 		//fprintf(stdout, "-callback\n");
 		if (on_frame_processed) {
-			on_frame_processed(frame, foundAt);
+			on_frame_processed(TmLastFrame, foundAt);
 		}
 	}
 }

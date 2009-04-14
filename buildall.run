@@ -21,7 +21,9 @@ gcc -g -o bin/track-a-colour-image track-a-colour-image.c `pkg-config --cflags -
 echo - Building Pick/Track a Colour - Video
 gcc -g -o bin/track-a-colour-video \
 			 track-a-colour-video.c track-a-colour-video-tracker.c \
+			 track-a-colour-video-cairo.c \
 			 `pkg-config --cflags --libs opencv` \
-			 `pkg-config --cflags --libs x11`
+			 `pkg-config --cflags --libs x11` \
+			 `pkg-config --cflags --libs cairo`
 
 echo Built!

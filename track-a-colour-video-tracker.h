@@ -11,6 +11,10 @@ bool tmInitVideoCapture(char *filename, uint red, uint green, uint blue, uint to
 // init output window
 void tmInitDisplayWindow(bool calibrate);
 
+// get sizes of capture
+int tmGetWidth();
+int tmGetHeight();
+
 // callback for displays
 typedef void (*tmFrameProcessedCallback)(IplImage *img, CvRect *foundAt);
 

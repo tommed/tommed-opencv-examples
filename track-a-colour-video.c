@@ -5,10 +5,12 @@
 #include <highgui.h>
 #include <X11/Xlib.h>
 #include "track-a-colour-video-tracker.h"
+#include "track-a-colour-video-cairo.h"
 
 void on_frame(IplImage *frame, CvRect *foundAt);
 
 CvFont font;
+bool hasCairoInit = false;
 
 int main(int argc, char *argv[]) {
 	fprintf(stdout, "main()\n");
@@ -35,12 +37,18 @@ int main(int argc, char *argv[]) {
 	cvWaitKey(0);
 
 	fprintf(stdout, "tmDealloc\n");
+	tm_cairo_release();
 	tmReleaseDisplayWindow();
 	tmReleaseVideoCapture();
 	exit(0);
 }
 
 void on_frame(IplImage *frame, CvRect *foundAt) {
+	// cairo extension can only be initialized when we have height and width
+	if (!hasCairoInit) {
+		tm_cairo_init(frame->width, frame->height);
+		hasCairoInit = true;
+	}
 	//fprintf(stdout, "on_frame\n");
 	if (foundAt != NULL) 
 	{
@@ -54,6 +62,8 @@ void on_frame(IplImage *frame, CvRect *foundAt) {
 		cvRectangle(frame, cvPoint(foundAt->x, foundAt->y), 
 											 cvPoint(foundAt->x+foundAt->width, foundAt->y+foundAt->height), 
 											 CV_RGB(255,0,0), 3, 0, 0);	
+											 
+		tm_cairo_move(foundAt->x, foundAt->y);
 	}
 	tmShowFrame(frame);
 }
