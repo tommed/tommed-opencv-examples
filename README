@@ -13,6 +13,7 @@ Author:
 	http://www.youtube.com/watch?v=a05mzsXTb6k
 	
 Ubuntu Prereqs:
+	- Cairo (included with GTK+)
 	sudo apt-get install libcv-dev libcv1 libcvaux-dev libcvaux1 libhighgui-dev libhighgui1 opencv-doc
 	
 Licence: (BSD)
